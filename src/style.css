@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/* ===== Notion Style 设计令牌（stylekit.top/zh/styles/notion-style）===== */
+@theme {
+  --color-ink: #37352f;              /* 主文字：Notion 深灰 */
+  --color-paper: #ffffff;            /* 内容背景 */
+  --color-canvas: #f7f6f3;           /* 标志性米色：侧栏/页面底 */
+  --color-hover: #efedea;            /* 悬停背景 */
+  --color-pressed: #e3e1db;          /* 按下/选中背景 */
+  --color-line: rgba(55, 53, 47, 0.09); /* 分割线/边框 */
+  --color-accent: #2eaadc;           /* 主蓝 */
+  --color-accent-soft: #e8f4fa;
+  --color-danger: #eb5757;
+  --color-danger-soft: #fdeeee;
+  --color-success: #0f7b6c;
+  --color-success-soft: #edf5f3;
+  --color-warn: #dfab01;
+  --color-warn-soft: #faf5e1;
+  --color-purple: #a083ff;
+  --color-purple-soft: #f1edfd;
+  --color-muted: #9b9a97;            /* 弱化辅助文字（仅装饰性信息） */
+
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji";
+  --font-mono: SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 6px rgba(0, 0, 0, 0.03);
+  --shadow-pop: 0 4px 12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(55, 53, 47, 0.06);
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  @apply bg-canvas text-ink font-sans antialiased;
+  line-height: 1.5;
+}
+
+/* 所有过渡统一 150ms；禁止 translate/scale 动效（Notion 规范） */
+* {
+  transition-property: none;
+}
+
+button, a, input, select, textarea, [class*="transition"] {
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+/* ===== 组件类 ===== */
+@layer components {
+  /* 按钮 */
+  .n-btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium
+      bg-transparent text-ink cursor-pointer select-none whitespace-nowrap
+      hover:bg-hover active:bg-pressed disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .n-btn-primary {
+    /* Notion 主按钮：墨色实心（蓝只承担链接/焦点等交互反馈，不与主操作抢夺） */
+    @apply bg-ink text-paper hover:bg-[#2f2c28] active:bg-[#262421];
+  }
+  .n-btn-danger {
+    @apply text-danger hover:bg-danger-soft active:bg-[#fbdcdc];
+  }
+  .n-btn-sm {
+    @apply px-2 py-1 text-[13px];
+  }
+
+  /* 输入 */
+  .n-input, .n-select, .n-textarea {
+    @apply w-full bg-paper border border-line rounded-md px-2.5 py-1.5 text-sm text-ink
+      placeholder:text-muted outline-none focus:ring-2 focus:ring-accent/40 focus:border-transparent;
+  }
+  .n-textarea {
+    @apply resize-y min-h-[72px];
+  }
+  .n-label {
+    @apply block text-[13px] font-medium text-ink mb-1;
+  }
+  .n-field {
+    @apply mb-4;
+  }
+
+  /* 卡片 */
+  .n-card {
+    @apply bg-paper border border-line rounded-lg shadow-[var(--shadow-card)];
+  }
+
+  /* 表格（Notion 数据库视图质感：无表头底色、舒展行距、弱分隔线） */
+  .n-table {
+    @apply w-full text-sm border-collapse;
+  }
+  .n-table th {
+    @apply text-left font-medium text-[12px] text-muted px-3 py-2.5 bg-transparent;
+    border-bottom: 1px solid rgba(55, 53, 47, 0.13);
+    letter-spacing: 0.02em;
+  }
+  .n-table td {
+    @apply px-3 py-3 align-middle;
+    border-bottom: 1px solid rgba(55, 53, 47, 0.055);
+  }
+  .n-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .n-table tbody tr:hover {
+    @apply bg-hover/70;
+  }
+
+  /* 标签 */
+  .n-tag {
+    @apply inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[12px] leading-4 font-medium;
+  }
+  .n-tag-blue { @apply bg-[#eaf3f7] text-[#417f9b]; }
+  .n-tag-green { @apply bg-success-soft text-success; }
+  .n-tag-red { @apply bg-danger-soft text-danger; }
+  .n-tag-yellow { @apply bg-warn-soft text-[#b89000]; }
+  .n-tag-purple { @apply bg-purple-soft text-purple; }
+  .n-tag-gray { @apply bg-pressed/60 text-ink/70; }
+
+  /* 链接 */
+  .n-link {
+    @apply text-accent hover:underline cursor-pointer;
+  }
+
+  /* 等宽（ID/路径/代码） */
+  .n-mono {
+    @apply font-mono text-[13px] text-ink/60;
+  }
+
+  /* 页面容器 */
+  .n-page {
+    @apply p-5 md:p-8 max-w-full;
+  }
+  .n-page-title {
+    @apply text-xl font-semibold text-ink tracking-tight;
+  }
+  .n-toolbar {
+    @apply flex flex-wrap items-center gap-2 mb-2;
+  }
+}
+
+/* 细滚动条（侧栏/表格容器） */
+.n-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.n-scroll::-webkit-scrollbar-thumb {
+  background: rgba(55, 53, 47, 0.16);
+  border-radius: 3px;
+}
+.n-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
